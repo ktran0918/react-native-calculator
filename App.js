@@ -1,13 +1,19 @@
 import React, { useState, useRef } from 'react';
 import {
-  StyleSheet,
   Text, View,
   TextInput, Button, TouchableHighlight,
   ScrollView,
-  KeyboardAvoidingView, Keyboard
+  KeyboardAvoidingView, Keyboard,
+  Platform
 } from 'react-native';
 
+import styles from './styles';
+import AppTitleText from './components/customText';
+
 function calculate(leftSide, rightSide, operator) {
+  leftSide = Number(leftSide);
+  rightSide = Number(rightSide);
+
   switch (operator) {
     case 'plus':
       return leftSide + rightSide;
@@ -16,7 +22,7 @@ function calculate(leftSide, rightSide, operator) {
     case 'multiply':
       return leftSide * rightSide;
     case 'divide':
-      return leftSide / rightSide;
+      return (leftSide / rightSide).toFixed(4);
   }
 }
 
@@ -39,8 +45,9 @@ export default function App() {
   const [leftSide, setLeftSide] = useState(null);
   const [rightSide, setRightSide] = useState(null);
   const [operatorName, setOperatorName] = useState('plus');
-  const [result, setResult] = useState(null);
   const [resultList, setResultList] = useState([]);
+
+  const [isLeftSide, setIsLeftSide] = useState(true);
 
   // const operatorNames = [
   //   'plus', 'minus', 'multiply', 'divide'
@@ -68,18 +75,26 @@ export default function App() {
   const scrollView = useRef(null);
 
   return (
+    // <View
+    //   style={styles.container}
+    // >
     <KeyboardAvoidingView
-      behavior='padding'
-      onPress={Keyboard.dismiss}
+      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      // onPress={Keyboard.dismiss}
       style={styles.container}
     >
       {/* <TouchableWithoutFeedback
         onPress={Keyboard.dismiss}
       >
         <View> */}
+
+      <AppTitleText appTitle='Calculator' />
+
       <View style={styles.numberInputView}>
         <TextInput
-          onChangeText={value => setLeftSide(Number(value))}
+          value={leftSide && String(leftSide)}
+          onChangeText={value => setLeftSide(value)}
+          onFocus={() => setIsLeftSide(true)}
           keyboardType='numeric'
           style={styles.numberInput}
         />
@@ -89,28 +104,12 @@ export default function App() {
         </Text>
 
         <TextInput
-          onChangeText={value => setRightSide(Number(value))}
+          value={rightSide && String(rightSide)}
+          onChangeText={value => setRightSide(value)}
+          onFocus={() => setIsLeftSide(false)}
           keyboardType='numeric'
           style={styles.numberInput}
         />
-
-        {/* <TouchableHighlight
-          onPress={() => {
-            let result = calculate(leftSide, rightSide, operatorName);
-            let resultItem = {
-              leftSide,
-              rightSide,
-              operatorName,
-              result
-            };
-            setResultList(resultList.concat(resultItem));
-          }}
-          style={styles.enterButton}
-        >
-          <Text style={styles.operatorSymbol}>
-            {'Enter'}
-          </Text>
-        </TouchableHighlight> */}
 
         <Button
           title='Enter'
@@ -133,6 +132,7 @@ export default function App() {
           return <TouchableHighlight
             onPress={() => setOperatorName(value.name)}
             key={index}
+            underlayColor='#ccc'
             style={{
               ...styles.operatorButton,
               backgroundColor: value.color
@@ -146,38 +146,41 @@ export default function App() {
         })}
       </View>
 
-      {/* <Pressable>
-        <Text>Test</Text>
-      </Pressable> */}
-
-
-      {/* <FlatList
-        data={resultList}
-        renderItem={({ row }) => <Text style={{ color: 'black' }}>{JSON.stringify(row)}</Text>}
-        style={{
-          height: 1000,
-          width: 1000,
-          backgroundColor: 'pink'
-        }}
-      /> */}
-
       <ScrollView
         ref={scrollView}
         onContentSizeChange={() => scrollView.current.scrollToEnd()}
+        keyboardShouldPersistTaps='always'
         style={styles.resultsScrollView}
       >
         <View
-          style={styles.resultsView}>
+          style={styles.resultsView}
+        >
           {resultList.map(({ leftSide, rightSide, operatorName, result }, index) => {
-            return <Text
-              key={index}
-              style={{
-                marginVertical: 5,
-                fontSize: 17
-              }}
-            >
-              {`${leftSide} ${operatorToSymbol(operatorName)} ${rightSide} = ${result}`}
-            </Text>;
+            return <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '2%' }}>
+              <Text
+                key={index}
+                style={{
+                  marginVertical: 5,
+                  fontSize: 17
+                }}
+              >
+                {`${leftSide} ${operatorToSymbol(operatorName)} ${rightSide} =`}
+              </Text>
+              <TouchableHighlight
+                onPress={() => isLeftSide ? setLeftSide(result) : setRightSide(result)}
+                underlayColor='#ccc'
+                style={styles.resultBox}
+              // style={styles.operatorButton}
+              >
+                <Text style={styles.operatorSymbol}>
+                  {result}
+                </Text>
+              </TouchableHighlight>
+              {/* <Button
+                title={String(result)}
+                onPress={() => isLeftSide ? setLeftSide(result) : setRightSide(result)}
+              /> */}
+            </View>;
           })}
         </View>
       </ScrollView>
@@ -189,64 +192,6 @@ export default function App() {
       {/* </View>
       </TouchableWithoutFeedback> */}
     </KeyboardAvoidingView>
+    // </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    margin: '15% 10%'
-  },
-  numberInputView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20
-  },
-  numberInput: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    padding: '2% 4%',
-    borderRadius: 3,
-    alignItems: 'center',
-    width: 80,
-    height: 50,
-    fontSize: 17
-  },
-  enterButton: {
-    height: 50,
-    paddingHorizontal: '5%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 3,
-    backgroundColor: 'green'
-  },
-  operatorSymbolView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20
-  },
-  operatorSymbol: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black'
-  },
-  operatorButton: {
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'lightblue',
-    borderRadius: 100
-  },
-  resultsScrollView: {
-    paddingHorizontal: '5%',
-    borderWidth: 2,
-    borderRadius: 5,
-    borderColor: 'lightgray'
-  },
-  resultsView: {
-    alignItems: 'flex-end'
-  }
-});
