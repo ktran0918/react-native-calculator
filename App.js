@@ -156,9 +156,11 @@ export default function App() {
           style={styles.resultsView}
         >
           {resultList.map(({ leftSide, rightSide, operatorName, result }, index) => {
-            return <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '2%' }}>
+            return <View
+              style={{ flexDirection: 'row', alignItems: 'center', marginTop: '2%' }}
+              key={index}
+            >
               <Text
-                key={index}
                 style={{
                   marginVertical: 5,
                   fontSize: 17
