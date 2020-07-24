@@ -8,36 +8,9 @@ import {
 } from 'react-native';
 
 import styles from './styles';
-import AppTitleText from './components/customText';
+import { AppTitleText, OperatorSymbol } from './components/customText';
 
-function calculate(leftSide, rightSide, operator) {
-  leftSide = Number(leftSide);
-  rightSide = Number(rightSide);
-
-  switch (operator) {
-    case 'plus':
-      return leftSide + rightSide;
-    case 'minus':
-      return leftSide - rightSide;
-    case 'multiply':
-      return leftSide * rightSide;
-    case 'divide':
-      return (leftSide / rightSide).toFixed(4);
-  }
-}
-
-function operatorToSymbol(operatorName) {
-  switch (operatorName) {
-    case 'plus':
-      return '+';
-    case 'minus':
-      return '−';
-    case 'multiply':
-      return '×';
-    case 'divide':
-      return '÷';
-  }
-}
+import arithmetic from './lib/arithmetic';
 
 // function 
 
@@ -48,10 +21,6 @@ export default function App() {
   const [resultList, setResultList] = useState([]);
 
   const [isLeftSide, setIsLeftSide] = useState(true);
-
-  // const operatorNames = [
-  //   'plus', 'minus', 'multiply', 'divide'
-  // ];
 
   const operatorNames = [
     {
@@ -69,6 +38,10 @@ export default function App() {
     {
       name: 'divide',
       color: 'khaki'
+    },
+    {
+      name: 'power',
+      color: 'mediumpurple'
     }
   ];
 
@@ -88,7 +61,7 @@ export default function App() {
       >
         <View> */}
 
-      <AppTitleText appTitle='Calculator' />
+      <AppTitleText>Calculator</AppTitleText>
 
       <View style={styles.numberInputView}>
         <TextInput
@@ -99,9 +72,9 @@ export default function App() {
           style={styles.numberInput}
         />
 
-        <Text style={styles.operatorSymbol}>
-          {operatorToSymbol(operatorName)}
-        </Text>
+        <OperatorSymbol>
+          {arithmetic.operatorToSymbol(operatorName)}
+        </OperatorSymbol>
 
         <TextInput
           value={rightSide && String(rightSide)}
@@ -114,7 +87,7 @@ export default function App() {
         <Button
           title='Enter'
           onPress={() => {
-            let result = calculate(leftSide, rightSide, operatorName);
+            let result = arithmetic.calculate(leftSide, rightSide, operatorName);
             let resultItem = {
               leftSide,
               rightSide,
@@ -139,9 +112,9 @@ export default function App() {
             }}
           // style={styles.operatorButton}
           >
-            <Text style={styles.operatorSymbol}>
-              {operatorToSymbol(value.name)}
-            </Text>
+            <OperatorSymbol>
+              {arithmetic.operatorToSymbol(value.name)}
+            </OperatorSymbol>
           </TouchableHighlight>;
         })}
       </View>
@@ -162,11 +135,10 @@ export default function App() {
             >
               <Text
                 style={{
-                  marginVertical: 5,
                   fontSize: 17
                 }}
               >
-                {`${leftSide} ${operatorToSymbol(operatorName)} ${rightSide} =`}
+                {`${leftSide} ${arithmetic.operatorToSymbol(operatorName)} ${rightSide} =`}
               </Text>
               <TouchableHighlight
                 onPress={() => isLeftSide ? setLeftSide(result) : setRightSide(result)}
@@ -174,9 +146,9 @@ export default function App() {
                 style={styles.resultBox}
               // style={styles.operatorButton}
               >
-                <Text style={styles.operatorSymbol}>
+                <OperatorSymbol>
                   {result}
-                </Text>
+                </OperatorSymbol>
               </TouchableHighlight>
               {/* <Button
                 title={String(result)}
@@ -188,7 +160,7 @@ export default function App() {
       </ScrollView>
 
       <Button
-        title='Clear'
+        title='Clear History'
         onPress={() => setResultList([])}
       />
       {/* </View>

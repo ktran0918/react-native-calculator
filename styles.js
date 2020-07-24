@@ -11,21 +11,19 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20
+    marginBottom: '5%'
   },
   numberInput: {
     borderColor: '#ccc',
     borderWidth: 1,
-    // paddingVertical: '3%',
-    // paddingHorizontal: '4%',
     borderRadius: 3,
     textAlign: 'center',
-    width: 100,
-    height: 40,
+    width: '35%',
+    height: '100%',
     fontSize: 17
   },
   enterButton: {
-    height: 50,
+    height: '100%',
     paddingHorizontal: '5%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -35,12 +33,7 @@ export default StyleSheet.create({
   operatorSymbolView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20
-  },
-  operatorSymbol: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black'
+    marginBottom: '5%'
   },
   operatorButton: {
     width: 50,
@@ -55,13 +48,13 @@ export default StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
     borderColor: 'lightgray',
-    marginBottom: 5
+    marginBottom: '2%'
   },
   resultsView: {
     alignItems: 'flex-end'
   },
   resultBox: {
-    marginLeft: 10,
+    marginLeft: '3%',
     paddingHorizontal: '2%',
     paddingVertical: '1%',
     alignItems: 'center',

@@ -2,11 +2,17 @@ import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 function AppTitleText(props) {
-  let { appTitle } = props;
-
   return (
     <Text style={styles.appTitle}>
-      {appTitle}
+      {props.children}
+    </Text>
+  );
+}
+
+function OperatorSymbol(props) {
+  return (
+    <Text style={styles.operatorSymbol}>
+      {props.children}
     </Text>
   );
 }
@@ -17,8 +23,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     // textTransform: 'uppercase',
     textAlign: 'center',
-    marginBottom: 25
-  }
+    marginBottom: '5%'
+  },
+  operatorSymbol: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black'
+  },
 });
 
-export default AppTitleText;
+export {
+  AppTitleText,
+  OperatorSymbol
+};
